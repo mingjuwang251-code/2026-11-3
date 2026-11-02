@@ -1,416 +1,539 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>國小自然素養導向互動試題：芹菜染色實驗</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-    }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
-
-  <!-- Header -->
-  <header class="bg-emerald-600 text-white shadow-md">
-    <div class="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between">
-      <div>
-        <span class="bg-emerald-800 text-emerald-100 text-xs px-2.5 py-1 rounded-full font-medium">國小自然科學領域．中年級</span>
-        <h1 class="text-2xl font-bold mt-1">🌿 植物水分輸送探究：素養導向互動檢測</h1>
-      </div>
-      <div class="hidden sm:block text-right">
-        <p class="text-emerald-100 text-sm">單元：植物的器官與功能</p>
-        <p class="text-emerald-200 text-xs">CER 科學論證與數據分析</p>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
-
-    <!-- Section 1: 情境介紹與互動實驗 -->
-    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <div class="flex items-center gap-3 border-b border-slate-100 pb-4 mb-4">
-        <span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">1</span>
-        <h2 class="text-xl font-bold text-slate-800">實驗情境與數據觀察</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <!-- 故事背景與對照表 -->
-        <div class="space-y-4">
-          <p class="text-slate-600 leading-relaxed">
-            <strong>小華的情境提問：</strong>「植物吸收水分後，是怎麼送到達頂端的葉子？根部存在與否會影響吸水效率嗎？」
-          </p>
-          <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
-            <h4 class="font-bold text-amber-800 text-sm mb-1"><i class="fa-solid fa-flask mr-1.5"></i>實驗設計處理方式：</h4>
-            <p class="text-xs text-amber-700 leading-normal">
-              小華挑選兩枝葉片數量與長度相近的芹菜（甲與乙），分別置於滴有<strong>紅色食用色素</strong>的水中，靜置 3 小時後進行觀察。
-            </p>
-          </div>
-
-          <!-- 處理表格 -->
-          <div class="overflow-x-auto rounded-lg border border-slate-200">
-            <table class="w-full text-sm text-left text-slate-600">
-              <thead class="text-xs text-slate-700 uppercase bg-slate-100">
-                <tr>
-                  <th class="px-3 py-2">芹菜編號</th>
-                  <th class="px-3 py-2">實驗處理方式</th>
-                  <th class="px-3 py-2">溶液與時間</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200">
-                <tr>
-                  <td class="px-3 py-2 font-bold text-emerald-700">芹菜甲</td>
-                  <td class="px-3 py-2">保留完整根、莖、葉</td>
-                  <td class="px-3 py-2">紅墨水 (3小時)</td>
-                </tr>
-                <tr>
-                  <td class="px-3 py-2 font-bold text-blue-700">芹菜乙</td>
-                  <td class="px-3 py-2">切除根部，留莖與葉</td>
-                  <td class="px-3 py-2">紅墨水 (3小時)</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 動態圖表與橫切面 -->
-        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <div class="flex justify-between items-center">
-            <h3 class="font-bold text-sm text-slate-700">📊 3 小時吸水量與染色比例比較圖</h3>
-            <div class="inline-flex rounded-md shadow-sm" role="group">
-              <button id="btnWater" onclick="updateChart('water')" class="px-2.5 py-1 text-xs font-medium text-emerald-700 bg-white border border-emerald-300 rounded-l-lg hover:bg-emerald-50 focus:z-10 focus:ring-2 focus:ring-emerald-500">吸水量(ml)</button>
-              <button id="btnLeaf" onclick="updateChart('leaf')" class="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-r-lg hover:bg-slate-50 focus:z-10 focus:ring-2 focus:ring-slate-500">葉變紅率(%)</button>
-            </div>
-          </div>
-          
-          <div class="h-48 relative">
-            <canvas id="celeryChart"></canvas>
-          </div>
-
-          <!-- 橫切面示意圖 -->
-          <div class="border-t border-slate-200 pt-3">
-            <p class="text-xs font-bold text-slate-600 mb-2">圖一：芹菜莖部橫切面觀察畫像</p>
-            <div class="flex items-center justify-around bg-white p-3 rounded-lg border border-slate-200">
-              <div class="text-center">
-                <div class="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-50 relative flex items-center justify-center mx-auto">
-                  <div class="w-2.5 h-2.5 rounded-full bg-red-500 absolute top-2 left-4"></div>
-                  <div class="w-2.5 h-2.5 rounded-full bg-red-500 absolute top-4 right-2"></div>
-                  <div class="w-2.5 h-2.5 rounded-full bg-red-500 absolute bottom-3 left-3"></div>
-                  <div class="w-2.5 h-2.5 rounded-full bg-red-500 absolute bottom-2 right-4"></div>
-                  <div class="w-2 h-2 rounded-full bg-emerald-300 absolute"></div>
-                </div>
-                <span class="text-xs text-slate-500 mt-1 block">莖橫切面 (紅點代表色素管路)</span>
-              </div>
-              <div class="text-xs text-slate-600 max-w-[180px] space-y-1">
-                <p><i class="fa-solid fa-circle text-red-500 text-[10px] mr-1"></i><strong>紅點位置：</strong>僅特定小管子（維管束）被染色。</p>
-                <p><i class="fa-regular fa-circle text-emerald-500 text-[10px] mr-1"></i><strong>其他區域：</strong>保持原本顏色，未擴散。</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 2: 素養導向評量題目 -->
-    <form id="quizForm" onsubmit="event.preventDefault(); submitQuiz();" class="space-y-6">
-
-      <!-- 子題 1 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <div class="flex items-start justify-between mb-3">
-          <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">子題 1．探究變因辨識（單選題）</span>
-          <span class="text-xs text-slate-400 font-medium">配分：30 分</span>
-        </div>
-        <h3 class="font-bold text-slate-800 text-base mb-3">
-          小華設計「甲芹菜（有根）」與「乙芹菜（無根）」進行比較，在這個實驗中，請問<strong>「有無根部」</strong>屬於下列哪一種變因？
-        </h3>
-        <div class="space-y-2">
-          <label class="flex items-center p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="radio" name="q1" value="A" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(A) 控制變因（實驗中保持不變的條件）</span>
-          </label>
-          <label class="flex items-center p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="radio" name="q1" value="B" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(B) 操作變因（實驗中專門改變的條件）</span>
-          </label>
-          <label class="flex items-center p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="radio" name="q1" value="C" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(C) 因應變因（實驗後產生的測量結果）</span>
-          </label>
-        </div>
-        <div id="feedback-q1" class="hidden mt-3 p-3 rounded-lg text-sm"></div>
-      </div>
-
-      <!-- 子題 2 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <div class="flex items-start justify-between mb-3">
-          <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">子題 2．圖表與現象推理（多選題）</span>
-          <span class="text-xs text-slate-400 font-medium">配分：30 分</span>
-        </div>
-        <h3 class="font-bold text-slate-800 text-base mb-3">
-          根據觀察到的實驗數據圖表與切面現象，下列哪些推論是正確的？（請選出所有正確選項）
-        </h3>
-        <div class="space-y-2">
-          <label class="flex items-start p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="checkbox" name="q2" value="A" class="w-4 h-4 text-emerald-600 rounded mt-0.5 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(A) 即使切除根部，芹菜的莖依然具備向上運輸水分的能力。</span>
-          </label>
-          <label class="flex items-start p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="checkbox" name="q2" value="B" class="w-4 h-4 text-emerald-600 rounded mt-0.5 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(B) 根部的存在能幫助植物吸收更多水分，提高水分運輸效率。</span>
-          </label>
-          <label class="flex items-start p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="checkbox" name="q2" value="C" class="w-4 h-4 text-emerald-600 rounded mt-0.5 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(C) 水分在莖內部是像海綿一樣均勻向四周擴散滲透，沒有固定線路。</span>
-          </label>
-          <label class="flex items-start p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-            <input type="checkbox" name="q2" value="D" class="w-4 h-4 text-emerald-600 rounded mt-0.5 focus:ring-emerald-500">
-            <span class="ml-3 text-sm text-slate-700">(D) 莖切面的紅點佈局顯示，水分是透過專門的通道（維管束）向上輸送。</span>
-          </label>
-        </div>
-        <div id="feedback-q2" class="hidden mt-3 p-3 rounded-lg text-sm"></div>
-      </div>
-
-      <!-- 子題 3：CER 科學論證短答題 -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <div class="flex items-start justify-between mb-3">
-          <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">子題 3．CER 科學論證短答（簡答題）</span>
-          <span class="text-xs text-slate-400 font-medium">配分：40 分</span>
-        </div>
-        <div class="mb-4">
-          <h3 class="font-bold text-slate-800 text-base mb-1">
-            小華提出以下的主張：「<strong>植物吸收水分後，是透過莖內部專門的小管子向上送到葉子的。</strong>」
-          </h3>
-          <p class="text-xs text-slate-500">請根據實驗觀察結果，寫出支持小華主張的【科學證據】與【推理邏輯】：</p>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">
-              1. 觀察到的科學證據（Evidence）：
-            </label>
-            <textarea id="q3_evidence" rows="2" class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="提示：你在芹菜莖橫切面或葉子上有觀察到什麼特別的顏色變化現象？"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">
-              2. 你的推理邏輯（Reasoning）：
-            </label>
-            <textarea id="q3_reasoning" rows="2" class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="提示：為什麼觀察到的這個色素染色現象，能夠證明水是在特定小管子裡向上跑？"></textarea>
-          </div>
-        </div>
-        <div id="feedback-q3" class="hidden mt-3 p-4 bg-slate-50 rounded-xl border border-slate-200 text-sm space-y-2"></div>
-      </div>
-
-      <!-- Submit Button -->
-      <div class="flex justify-center pt-4">
-        <button type="submit" class="w-full sm:w-auto px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-200 transition-all transform active:scale-95 flex items-center justify-center gap-2">
-          <i class="fa-solid fa-paper-plane"></i> 提交答案與檢視素養評分報告
-        </button>
-      </div>
-
-    </form>
-
-    <!-- Score Summary Modal/Card -->
-    <div id="scoreReport" class="hidden bg-emerald-900 text-white rounded-2xl p-6 shadow-xl space-y-4">
-      <div class="flex justify-between items-center border-b border-emerald-800 pb-4">
-        <h3 class="text-xl font-bold flex items-center gap-2">
-          <i class="fa-solid fa-award text-amber-400"></i> 素養學習評測報告
-        </h3>
-        <span id="scoreTag" class="text-2xl font-black text-amber-300">-- / 100 分</span>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-        <div class="bg-emerald-800/60 p-3 rounded-xl border border-emerald-700">
-          <p class="text-xs text-emerald-300">變因辨識能力</p>
-          <p id="scoreQ1" class="text-lg font-bold mt-1">-</p>
-        </div>
-        <div class="bg-emerald-800/60 p-3 rounded-xl border border-emerald-700">
-          <p class="text-xs text-emerald-300">圖表推論能力</p>
-          <p id="scoreQ2" class="text-lg font-bold mt-1">-</p>
-        </div>
-        <div class="bg-emerald-800/60 p-3 rounded-xl border border-emerald-700">
-          <p class="text-xs text-emerald-300">CER 科學論證力</p>
-          <p id="scoreQ3" class="text-lg font-bold mt-1">-</p>
-        </div>
-      </div>
-
-      <div id="overallFeedback" class="text-sm leading-relaxed text-emerald-100 bg-emerald-800/40 p-4 rounded-xl">
-        <!-- 綜合點評 -->
-      </div>
-    </div>
-
-  </main>
-
-  <script>
-    // Chart.js 實作
-    let celeryChart;
-    const chartData = {
-      water: {
-        label: '3小時總吸水量 (ml)',
-        data: [15, 8],
-        backgroundColor: ['#10b981', '#3b82f6'],
-        borderColor: ['#059669', '#2563eb'],
-      },
-      leaf: {
-        label: '葉片染色覆蓋率 (%)',
-        data: [85, 45],
-        backgroundColor: ['#f59e0b', '#ec4899'],
-        borderColor: ['#d97706', '#db2777'],
-      }
-    };
-
-    window.onload = function() {
-      const ctx = document.getElementById('celeryChart').getContext('2d');
-      celeryChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['芹菜甲 (有根)', '芹菜乙 (無根)'],
-          datasets: [{
-            label: chartData.water.label,
-            data: chartData.water.data,
-            backgroundColor: chartData.water.backgroundColor,
-            borderColor: chartData.water.borderColor,
-            borderWidth: 1.5,
-            borderRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣歷史文化探究學習單：大稻埕與淡水河貿易變遷</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (古典楷/宋體字型) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        historyPaper: {
+                            50: '#fdfbf7',
+                            100: '#f7f0e3',
+                            200: '#eddcb9',
+                            300: '#e1c28b',
+                            400: '#d5a560',
+                            500: '#c3873c',
+                            600: '#a76a2f',
+                            700: '#865029',
+                            800: '#6d4126',
+                            900: '#593623',
+                        },
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'PMingLiU', 'serif'],
+                    }
+                }
+            }
         }
-      });
-    };
+    </script>
 
-    function updateChart(type) {
-      const btnWater = document.getElementById('btnWater');
-      const btnLeaf = document.getElementById('btnLeaf');
+    <style>
+        body {
+            background-color: #f2e9d8;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
 
-      if (type === 'water') {
-        celeryChart.data.datasets[0].label = chartData.water.label;
-        celeryChart.data.datasets[0].data = chartData.water.data;
-        celeryChart.data.datasets[0].backgroundColor = chartData.water.backgroundColor;
-        btnWater.className = "px-2.5 py-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-400 rounded-l-lg";
-        btnLeaf.className = "px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-r-lg";
-      } else {
-        celeryChart.data.datasets[0].label = chartData.leaf.label;
-        celeryChart.data.datasets[0].data = chartData.leaf.data;
-        celeryChart.data.datasets[0].backgroundColor = chartData.leaf.backgroundColor;
-        btnLeaf.className = "px-2.5 py-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-400 rounded-r-lg";
-        btnWater.className = "px-2.5 py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-l-lg";
-      }
-      celeryChart.update();
-    }
+        .parchment-card {
+            background: #fdfbf7;
+            background-image: radial-gradient(#e5d5be 0.5px, transparent 0.5px);
+            background-size: 12px 12px;
+            box-shadow: 0 4px 20px -2px rgba(109, 65, 38, 0.15);
+        }
 
-    // 提交測驗與自動批改
-    function submitQuiz() {
-      let totalScore = 0;
-      let s1 = 0, s2 = 0, s3 = 0;
+        .vintage-border {
+            border: 2px solid #865029;
+            position: relative;
+        }
+        
+        .vintage-border::before {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            border: 1px solid #d5a560;
+            pointer-events: none;
+        }
 
-      // 題1 檢核
-      const q1Val = document.querySelector('input[name="q1"]:checked')?.value;
-      const fb1 = document.getElementById('feedback-q1');
-      fb1.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-green-50', 'text-green-700');
-      
-      if (q1Val === 'B') {
-        s1 = 30;
-        fb1.classList.add('bg-green-50', 'text-green-700');
-        fb1.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i><strong>正確 (+30分)：</strong>「有無根部」是實驗中唯一主動改變的條件，稱為操作變因。';
-      } else {
-        fb1.classList.add('bg-red-50', 'text-red-700');
-        fb1.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5"></i><strong>需再思考 (0分)：</strong>正確答案為 (B)。「有無根部」是實驗組與對照組之間唯一不同、被專門改變的條件。';
-      }
+        /* A4 紙張列印優化 (Print Optimization) */
+        @page {
+            size: A4 portrait;
+            margin: 6mm 8mm;
+        }
 
-      // 題2 檢核 (正確答案: A, B, D)
-      const q2Checked = Array.from(document.querySelectorAll('input[name="q2"]:checked')).map(el => el.value);
-      const fb2 = document.getElementById('feedback-q2');
-      fb2.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-green-50', 'text-green-700');
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-container {
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border: none !important;
+                background: white !important;
+            }
+            .parchment-card {
+                background: white !important;
+                box-shadow: none !important;
+            }
+            input, select, textarea {
+                border: none !important;
+                border-bottom: 1px solid #666 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            .feedback-box {
+                display: none !important;
+            }
+            .interactive-panel {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="py-4 sm:py-6 text-historyPaper-900 min-h-screen">
 
-      const isA = q2Checked.includes('A');
-      const isB = q2Checked.includes('B');
-      const isC = q2Checked.includes('C');
-      const isD = q2Checked.includes('D');
-
-      if (isA && isB && !isC && isD) {
-        s2 = 30;
-        fb2.classList.add('bg-green-50', 'text-green-700');
-        fb2.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i><strong>全對 (+30分)：</strong>推論完全正確！切面紅點證實水分只走專用管路，且無根芹菜依然能吸水，只是效率較低。';
-      } else {
-        s2 = (isA && isB && isD) ? 20 : 10;
-        fb2.classList.add('bg-amber-50', 'text-amber-800');
-        fb2.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i><strong>部分正確 (得${s2}分)：</strong>正確推論應包含 (A)、(B) 與 (D)。(C)選項錯誤，因為色素只染紅特定管子，並未全盤擴散滲透。`;
-      }
-
-      // 題3 檢核 (關鍵字比對)
-      const evText = document.getElementById('q3_evidence').value;
-      const reText = document.getElementById('q3_reasoning').value;
-      const fb3 = document.getElementById('feedback-q3');
-      fb3.classList.remove('hidden');
-
-      let evScore = 0;
-      let reScore = 0;
-
-      // 關鍵字檢視
-      if (evText.includes('紅點') || evText.includes('管子') || evText.includes('紅色') || evText.includes('切面') || evText.includes('葉脈')) {
-        evScore = 20;
-      } else if (evText.trim().length > 3) {
-        evScore = 10;
-      }
-
-      if (reText.includes('色素') || reText.includes('運輸') || reText.includes('向上') || reText.includes('管路') || reText.includes('水路')) {
-        reScore = 20;
-      } else if (reText.trim().length > 3) {
-        reScore = 10;
-      }
-
-      s3 = evScore + reScore;
-
-      fb3.innerHTML = `
-        <div class="font-bold text-slate-700 mb-1">📝 CER 論證評分回饋（評得分：${s3} / 40分）：</div>
-        <div class="text-xs space-y-1 text-slate-600">
-          <p>📌 <strong>科學證據檢視：</strong> ${evScore === 20 ? '<span class="text-green-600 font-bold">符合關鍵觀察！</span>成功指出莖切面紅點/特定管子變紅。' : '建議更明確描述切面上的「紅點」或「變紅管子」。'}</p>
-          <p>📌 <strong>推理邏輯檢視：</strong> ${reScore === 20 ? '<span class="text-green-600 font-bold">邏輯連貫！</span>成功連結紅色水流向與水分輸送管路的關係。' : '建議寫出「因為色素隨水向上流，使特定管子變紅」的連結邏輯。'}</p>
+    <!-- 頁頭操作控制列（列印隱藏） -->
+    <header class="max-w-[210mm] mx-auto mb-4 px-3 flex justify-between items-center no-print">
+        <div class="flex items-center gap-2">
+            <span class="px-3 py-1 bg-historyPaper-800 text-historyPaper-100 font-serif font-bold rounded-md text-xs shadow-sm flex items-center gap-1">
+                <i class="fa-solid fa-anchor"></i> 社會領域探究網頁版
+            </span>
+            <span class="text-xs text-historyPaper-800 font-medium hidden sm:inline">五年級台灣歷史與文化變遷</span>
         </div>
-        <div class="mt-2 text-xs bg-emerald-100 p-2 rounded text-emerald-800">
-          <strong>標準答案參考：</strong><br>
-          ・<strong>證據：</strong>觀察到芹菜莖橫切面上只有特定位置的小管子（紅點）被染成紅色。<br>
-          ・<strong>推理：</strong>紅色色素是溶在水裡被吸收的，既然只有特定管子變紅，代表水分是沿著這些專用管路向上輸送到葉子。
+        <div class="flex gap-2">
+            <button onclick="checkAnswers()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-3 py-1.5 rounded shadow transition flex items-center gap-1">
+                <i class="fa-solid fa-square-check"></i> 檢查答案與計分
+            </button>
+            <button onclick="resetWorksheet()" class="bg-historyPaper-200 hover:bg-historyPaper-300 text-historyPaper-800 text-xs font-bold px-3 py-1.5 rounded transition flex items-center gap-1">
+                <i class="fa-solid fa-rotate-left"></i> 重設學習單
+            </button>
+            <button onclick="window.print()" class="bg-historyPaper-700 hover:bg-historyPaper-800 text-white text-xs font-bold px-3.5 py-1.5 rounded shadow transition flex items-center gap-1">
+                <i class="fa-solid fa-print"></i> 列印學習單 (A4)
+            </button>
         </div>
-      `;
+    </header>
 
-      // 總分計算
-      totalScore = s1 + s2 + s3;
-      document.getElementById('scoreReport').classList.remove('hidden');
-      document.getElementById('scoreTag').innerText = `${totalScore} / 100 分`;
-      document.getElementById('scoreQ1').innerText = `${s1} / 30 分`;
-      document.getElementById('scoreQ2').innerText = `${s2} / 30 分`;
-      document.getElementById('scoreQ3').innerText = `${s3} / 40 分`;
+    <!-- A4 頁面主體容器 -->
+    <main class="page-container max-w-[210mm] mx-auto parchment-card p-5 sm:p-6 rounded-lg border-2 border-historyPaper-600 leading-tight text-xs">
+        
+        <!-- 標題區 -->
+        <header class="border-b-2 border-historyPaper-700 pb-2 mb-3">
+            <div class="flex justify-between items-baseline mb-1">
+                <h1 class="font-serif text-lg sm:text-xl font-black text-historyPaper-900 tracking-wide flex items-center gap-2">
+                    <i class="fa-solid fa-ship text-historyPaper-600"></i>
+                    穿越時空的大河記憶：大稻埕與淡水河貿易文化變遷
+                </h1>
+                <span class="text-[10px] text-historyPaper-700 font-serif font-semibold">國小五年級社會領域探究學習單</span>
+            </div>
+            
+            <!-- 學生資訊填寫區 -->
+            <div class="grid grid-cols-4 gap-2 bg-historyPaper-100/70 p-2 rounded border border-historyPaper-300 text-[11px] font-medium">
+                <div class="flex items-center gap-1">
+                    <span>五年</span>
+                    <input type="text" class="w-8 border-b border-historyPaper-700 bg-transparent text-center font-bold outline-none" placeholder=" ">
+                    <span>班</span>
+                    <input type="text" class="w-8 border-b border-historyPaper-700 bg-transparent text-center font-bold outline-none" placeholder=" ">
+                    <span>組</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span>姓名：</span>
+                    <input type="text" class="w-20 border-b border-historyPaper-700 bg-transparent font-bold outline-none" placeholder=" ">
+                </div>
+                <div class="flex items-center gap-1">
+                    <span>日期：</span>
+                    <input type="text" id="currentDate" class="w-24 border-b border-historyPaper-700 bg-transparent font-bold outline-none">
+                </div>
+                <div class="flex items-center justify-end font-bold text-historyPaper-900">
+                    <span>總分：</span>
+                    <span id="scoreDisplay" class="text-rose-700 text-sm font-black w-10 text-center border-b border-historyPaper-600">--</span>
+                    <span>/ 100</span>
+                </div>
+            </div>
+        </header>
 
-      const overall = document.getElementById('overallFeedback');
-      if (totalScore >= 85) {
-        overall.innerHTML = '🎉 <strong>極優秀的科學素養表現！</strong> 你不僅能精確辨識實驗變因，還展現出非常強的數據閱讀與 CER 科學論證能力！';
-      } else if (totalScore >= 60) {
-        overall.innerHTML = '👍 <strong>表現良好！</strong> 你具備基礎的科學探究觀念，若能進一步精確描述觀察到的細節證據，論證力會更棒！';
-      } else {
-        overall.innerHTML = '💪 <strong>繼續加油！</strong> 建議再次觀察上方動態圖表與芹菜橫切面圖示，試著思考「紅點」在科學上代表的意義。';
-      }
+        <!-- 【任務一：台灣古今地圖對比與地景觀察】 -->
+        <section class="mb-3">
+            <h2 class="font-serif font-bold text-sm text-historyPaper-900 mb-1.5 flex items-center justify-between border-b border-historyPaper-300 pb-0.5">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-4 h-4 bg-historyPaper-800 text-historyPaper-100 rounded-full inline-flex items-center justify-center text-[10px] font-mono">1</span>
+                    【任務一】古今地圖大比對：淡水港開港與大稻埕繁榮
+                </span>
+                <span class="text-[10px] text-historyPaper-700 font-normal no-print">* 點擊下方按鈕可切換古今地圖圖層</span>
+            </h2>
 
-      // 平滑滾動到結果頁
-      document.getElementById('scoreReport').scrollIntoView({ behavior: 'smooth' });
-    }
-  </script>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                <!-- 地圖呈現與切換區 (7 cols) -->
+                <div class="md:col-span-7 vintage-border p-2 bg-historyPaper-50 rounded">
+                    <div class="flex justify-between items-center mb-1 pb-1 border-b border-historyPaper-200">
+                        <span id="mapTitle" class="font-serif font-bold text-historyPaper-800 text-[11px]">
+                            <i class="fa-solid fa-map"></i> 1860s 淡水港開港與貿易水路古圖
+                        </span>
+                        <div class="flex gap-1 no-print">
+                            <button onclick="switchMap('ancient')" id="btnAncient" class="px-2 py-0.5 bg-historyPaper-800 text-historyPaper-100 text-[9px] font-bold rounded">1860s 古圖</button>
+                            <button onclick="switchMap('modern')" id="btnModern" class="px-2 py-0.5 bg-historyPaper-200 text-historyPaper-800 text-[9px] font-bold rounded">現代地圖</button>
+                        </div>
+                    </div>
+
+                    <!-- 向量地圖示意畫布 -->
+                    <div class="w-full h-36 bg-amber-50 rounded border border-historyPaper-300 relative overflow-hidden flex items-center justify-center">
+                        <svg id="mapSvg" class="w-full h-full" viewBox="0 0 300 140">
+                            <!-- 古圖圖層 SVG -->
+                            <g id="ancientLayer">
+                                <rect width="300" height="140" fill="#f4ece1"/>
+                                <!-- 淡水河系水路 -->
+                                <path d="M 40 140 Q 90 90, 120 70 T 220 20 L 260 0 L 300 0 L 300 140 Z" fill="#c4d4e0" stroke="#7a9bb8" stroke-width="2"/>
+                                <!-- 淡水港口標示 -->
+                                <circle cx="210" cy="25" r="5" fill="#a76a2f"/>
+                                <text x="175" y="20" font-family="serif" font-size="9" font-weight="bold" fill="#6d4126">淡水港 (洋行/砲台)</text>
+                                <!-- 大稻埕碼頭與茶街 -->
+                                <circle cx="110" cy="80" r="6" fill="#be123c"/>
+                                <text x="50" y="75" font-family="serif" font-size="10" font-weight="bold" fill="#be123c">大稻埕 (茶行與郊商)</text>
+                                <path d="M 110 80 L 130 95 L 150 90" fill="none" stroke="#be123c" stroke-width="1.5" stroke-dasharray="2,2"/>
+                                <!-- 艋舺 -->
+                                <circle cx="85" cy="110" r="4" fill="#854d0e"/>
+                                <text x="45" y="115" font-family="serif" font-size="9" fill="#854d0e">艋舺 (舊河港)</text>
+                                <!-- 帆船裝飾 -->
+                                <path d="M 230 40 L 235 30 L 240 40 Z" fill="#6d4126"/>
+                                <text x="215" y="52" font-family="serif" font-size="8" fill="#593623">戎克船/洋船</text>
+                            </g>
+                            <!-- 現代圖層 SVG (預設隱藏) -->
+                            <g id="modernLayer" opacity="0">
+                                <rect width="300" height="140" fill="#e2e8f0"/>
+                                <path d="M 40 140 Q 90 90, 120 70 T 220 20 L 260 0 L 300 0 L 300 140 Z" fill="#93c5fd" stroke="#2563eb" stroke-width="2"/>
+                                <circle cx="210" cy="25" r="5" fill="#1d4ed8"/>
+                                <text x="175" y="20" font-family="sans-serif" font-size="9" font-weight="bold" fill="#1e3a8a">淡水捷運站/老街</text>
+                                <circle cx="110" cy="80" r="6" fill="#047857"/>
+                                <text x="45" y="75" font-family="sans-serif" font-size="10" font-weight="bold" fill="#047857">迪化街歷史街區</text>
+                                <path d="M 30 50 L 270 50" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                                <text x="140" y="45" font-family="sans-serif" font-size="8" fill="#b45309">臺北環河快速道路</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 右側史料比對問答 (5 cols) -->
+                <div class="md:col-span-5 space-y-2 text-[11px]">
+                    <div class="bg-historyPaper-100/80 p-2 rounded border border-historyPaper-300">
+                        <p class="font-bold text-historyPaper-900 mb-1">1. 比對古今地圖，淡水河在19世紀扮演的主要角色是：</p>
+                        <select class="q-map border rounded w-full bg-white p-1 text-[11px]" data-ans="國際貿易與貨物運輸命脈">
+                            <option value="">--請選擇--</option>
+                            <option value="僅提供農田灌溉">僅提供農田灌溉</option>
+                            <option value="國際貿易與貨物運輸命脈">國際貿易與貨物運輸命脈</option>
+                            <option value="觀光遊艇遊覽路線">觀光遊艇遊覽路線</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-historyPaper-100/80 p-2 rounded border border-historyPaper-300">
+                        <p class="font-bold text-historyPaper-900 mb-1">2. 哪一項「外銷商品」是大稻埕躍升為商業中心的關鍵？</p>
+                        <select class="q-map border rounded w-full bg-white p-1 text-[11px]" data-ans="烏龍茶與包種茶">
+                            <option value="">--請選擇--</option>
+                            <option value="甘蔗與稻米">甘蔗與稻米</option>
+                            <option value="烏龍茶與包種茶">烏龍茶與包種茶</option>
+                            <option value="黃金與煤礦">黃金與煤礦</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 【任務二：歷史角色檔案與史料解密】 -->
+        <section class="mb-3">
+            <h2 class="font-serif font-bold text-sm text-historyPaper-900 mb-1.5 flex items-center justify-between border-b border-historyPaper-300 pb-0.5">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-4 h-4 bg-historyPaper-800 text-historyPaper-100 rounded-full inline-flex items-center justify-center text-[10px] font-mono">2</span>
+                    【任務二】歷史角色檔案與史料日記解密（非成品動態生成）
+                </span>
+                <span class="text-[10px] text-historyPaper-700 font-normal no-print">* 點擊角色卡切換不同立場的歷史日記</span>
+            </h2>
+
+            <!-- 角色選擇切換按鈕（列印時顯示全角色） -->
+            <div class="grid grid-cols-4 gap-1.5 mb-2 no-print">
+                <button onclick="selectRole('role1')" id="btn-role1" class="role-btn active p-1.5 rounded bg-historyPaper-800 text-historyPaper-100 text-[10px] font-bold text-center">
+                    <i class="fa-solid fa-leaf"></i> 樟腦/茶農
+                </button>
+                <button onclick="selectRole('role2')" id="btn-role2" class="role-btn p-1.5 rounded bg-historyPaper-200 text-historyPaper-800 text-[10px] font-bold text-center">
+                    <i class="fa-solid fa-coins"></i> 郊商貿易商
+                </button>
+                <button onclick="selectRole('role3')" id="btn-role3" class="role-btn p-1.5 rounded bg-historyPaper-200 text-historyPaper-800 text-[10px] font-bold text-center">
+                    <i class="fa-solid fa-user-doctor"></i> 馬偕傳教士
+                </button>
+                <button onclick="selectRole('role4')" id="btn-role4" class="role-btn p-1.5 rounded bg-historyPaper-200 text-historyPaper-800 text-[10px] font-bold text-center">
+                    <i class="fa-solid fa-scroll"></i> 清朝官員
+                </button>
+            </div>
+
+            <!-- 史料日記卡片展示區 -->
+            <div class="vintage-border bg-historyPaper-50 p-2.5 rounded mb-2">
+                <div id="roleContent">
+                    <!-- 動態渲染角色內容 -->
+                </div>
+            </div>
+
+            <!-- 觀點紀錄回答欄 -->
+            <div class="bg-historyPaper-100/60 p-2 rounded border border-historyPaper-300">
+                <p class="font-bold text-historyPaper-900 mb-1">【角色觀點摘錄】：當台灣開港通商後，外國文化與茶葉貿易對這個角色的生活帶來什麼影響與改變？</p>
+                <textarea id="roleAns" class="w-full h-12 bg-white border border-historyPaper-300 rounded p-1.5 text-[11px] focus:outline-none focus:border-historyPaper-600" placeholder="例：茶農可以將採收的茶葉賣給外商，賺取更多收入，但也面臨價格波動的風險..."></textarea>
+            </div>
+        </section>
+
+        <!-- 【任務三：文化交融連連看與異文化衝突】 -->
+        <section class="mb-3">
+            <h2 class="font-serif font-bold text-sm text-historyPaper-900 mb-1.5 flex items-center justify-between border-b border-historyPaper-300 pb-0.5">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-4 h-4 bg-historyPaper-800 text-historyPaper-100 rounded-full inline-flex items-center justify-center text-[10px] font-mono">3</span>
+                    【任務三】東西文化交融配對（建築、醫療、教育與飲食）
+                </span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px]">
+                <div class="bg-historyPaper-100/50 p-2 rounded border border-historyPaper-300 space-y-1.5">
+                    <div class="flex items-center justify-between border-b border-historyPaper-200 pb-1">
+                        <span>(1) 大稻埕迪化街紅磚洋樓裝飾：</span>
+                        <select class="match-cult border rounded px-1.5 py-0.5 bg-white text-[10px]" data-ans="巴洛克與閩南建築融合">
+                            <option value="">請選擇</option>
+                            <option value="巴洛克與閩南建築融合">巴洛克與閩南建築融合</option>
+                            <option value="傳統三合院">傳統三合院</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-historyPaper-200 pb-1">
+                        <span>(2) 馬偕博士在淡水建立的滬尾偕醫館：</span>
+                        <select class="match-cult border rounded px-1.5 py-0.5 bg-white text-[10px]" data-ans="西式現代醫療與拔牙">
+                            <option value="">請選擇</option>
+                            <option value="傳統漢醫抓藥">傳統漢醫抓藥</option>
+                            <option value="西式現代醫療與拔牙">西式現代醫療與拔牙</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-historyPaper-100/50 p-2 rounded border border-historyPaper-300 space-y-1.5">
+                    <div class="flex items-center justify-between border-b border-historyPaper-200 pb-1">
+                        <span>(3) 理學堂大書院（牛津學堂）：</span>
+                        <select class="match-cult border rounded px-1.5 py-0.5 bg-white text-[10px]" data-ans="引進新式西式教育">
+                            <option value="">請選擇</option>
+                            <option value="引進新式西式教育">引進新式西式教育</option>
+                            <option value="科舉考試私塾">科舉考試私塾</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>(4) 寶順洋行（陶德與李春生）：</span>
+                        <select class="match-cult border rounded px-1.5 py-0.5 bg-white text-[10px]" data-ans="推廣 Formosa Tea 銷往美國">
+                            <option value="">請選擇</option>
+                            <option value="推廣 Formosa Tea 銷往美國">推廣 Formosa Tea 銷往美國</option>
+                            <option value="販售香料至歐洲">販售香料至歐洲</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 【任務四：表現評量量規 (Rubric)】 -->
+        <section class="mb-2">
+            <h2 class="font-serif font-bold text-sm text-historyPaper-900 mb-1 flex items-center justify-between border-b border-historyPaper-300 pb-0.5">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-4 h-4 bg-historyPaper-800 text-historyPaper-100 rounded-full inline-flex items-center justify-center text-[10px] font-mono">4</span>
+                    【任務四】小組歷史探究表現評量量規
+                </span>
+                <span class="text-[10px] text-historyPaper-700 font-normal">點選表格進行自評，系統將自動計算得分</span>
+            </h2>
+
+            <table class="w-full text-center border-collapse border border-historyPaper-400 text-[10px]">
+                <thead>
+                    <tr class="bg-historyPaper-200 text-historyPaper-900 font-serif">
+                        <th class="border border-historyPaper-400 p-1 text-left pl-2">評量指標 (維度)</th>
+                        <th class="border border-historyPaper-400 p-1 w-14">優良(4分)</th>
+                        <th class="border border-historyPaper-400 p-1 w-14">良好(3分)</th>
+                        <th class="border border-historyPaper-400 p-1 w-14">基礎(2分)</th>
+                        <th class="border border-historyPaper-400 p-1 w-14">待加強(1分)</th>
+                        <th class="border border-historyPaper-400 p-1 w-12">得分</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-historyPaper-50/50">
+                    <tr>
+                        <td class="border border-historyPaper-300 p-1 text-left pl-2 font-medium">1. 史料與地圖讀解：能正確比對古今淡水河地景與貿易發展關係。</td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr1" value="4" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr1" value="3" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr1" value="2" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr1" value="1" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300 font-bold text-historyPaper-800" id="hr1_val">-</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-historyPaper-300 p-1 text-left pl-2 font-medium">2. 多元歷史立場同理：能理解不同角色（茶農/洋商/官員）的觀點與困境。</td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr2" value="4" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr2" value="3" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr2" value="2" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr2" value="1" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300 font-bold text-historyPaper-800" id="hr2_val">-</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-historyPaper-300 p-1 text-left pl-2 font-medium">3. 文化資產關懷：能展現對大稻埕與淡水歷史文化資產保存的認同。</td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr3" value="4" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr3" value="3" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr3" value="2" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300"><input type="radio" name="hr3" value="1" onclick="calcRubric()"></td>
+                        <td class="border border-historyPaper-300 font-bold text-historyPaper-800" id="hr3_val">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="mt-2 pt-1 border-t border-historyPaper-400 flex justify-between items-center text-[9px] text-historyPaper-700 font-serif">
+            <span>國小五年級 社會領域台灣歷史文化探究學習單</span>
+            <span>設計原則：古今史料比對 × 角色立場思考 × 歷史文化認同</span>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript 邏輯：古今地圖切換、角色日記切換與自動計分 -->
+    <script>
+        // 四大角色史料檔案資料庫
+        const rolesData = {
+            role1: {
+                title: "【歷史檔案 A】海山山區茶農的日記 (1868年)",
+                tag: "茶農/樟腦工人",
+                content: "「這幾年山上的樟腦和茶樹賣得特別好！洋商陶德先生來到大稻埕收購茶葉，還教我們改良烘焙技術。雖然採茶很辛苦，但茶葉能賣給洋船運去美國，家裡的收入比以前種甘蔗多多了！」"
+            },
+            role2: {
+                title: "【歷史檔案 B】大稻埕郊商貿易商人的帳簿紀錄 (1875年)",
+                tag: "郊商/洋行夥伴",
+                content: "「淡水開港後，西洋船隻源源不絕駛入淡水河。我們與洋商合作在河岸邊設立茶女揀茶葉的精製場，大稻埕的碼頭每天搬運成千上萬箱烏龍茶。這條河讓大稻埕變成了全台灣最繁華的商業中心！」"
+            },
+            role3: {
+                title: "【歷史檔案 C】馬偕博士 (George L. Mackay) 的傳教回憶錄 (1872年)",
+                tag: "西洋傳教士與醫生",
+                content: "「我搭乘蒸氣船來到淡水，這裡的風景令人讚嘆。剛開始當地居民對我有戒心，但我設置了醫館幫大家免費拔牙與治療瘧疾，並建立了牛津學堂。西方的醫學與教育開始在這片土地扎根。」"
+            },
+            role4: {
+                title: "【歷史檔案 D】清朝淡水廳官員的告示史料 (1865年)",
+                tag: "清朝官員",
+                content: "「朝廷因簽訂條約開放淡水港通商後，設立海關徵收茶葉與樟腦稅收。外國洋行在港邊林立，帶來大量洋銀與物資，但也需要加強防務與維護漢人與外國人的治安交易秩序。」"
+            }
+        };
+
+        // 頁面初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            document.getElementById('currentDate').value = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()}`;
+            selectRole('role1');
+        });
+
+        // 古今地圖切換邏輯
+        function switchMap(type) {
+            const ancientLayer = document.getElementById('ancientLayer');
+            const modernLayer = document.getElementById('modernLayer');
+            const mapTitle = document.getElementById('mapTitle');
+            const btnAncient = document.getElementById('btnAncient');
+            const btnModern = document.getElementById('btnModern');
+
+            if (type === 'ancient') {
+                ancientLayer.setAttribute('opacity', '1');
+                modernLayer.setAttribute('opacity', '0');
+                mapTitle.innerHTML = '<i class="fa-solid fa-map"></i> 1860s 淡水港開港與貿易水路古圖';
+                btnAncient.className = 'px-2 py-0.5 bg-historyPaper-800 text-historyPaper-100 text-[9px] font-bold rounded';
+                btnModern.className = 'px-2 py-0.5 bg-historyPaper-200 text-historyPaper-800 text-[9px] font-bold rounded';
+            } else {
+                ancientLayer.setAttribute('opacity', '0');
+                modernLayer.setAttribute('opacity', '1');
+                mapTitle.innerHTML = '<i class="fa-solid fa-map-location-dot"></i> 現代大臺北與淡水河系衛星圖';
+                btnAncient.className = 'px-2 py-0.5 bg-historyPaper-200 text-historyPaper-800 text-[9px] font-bold rounded';
+                btnModern.className = 'px-2 py-0.5 bg-historyPaper-800 text-historyPaper-100 text-[9px] font-bold rounded';
+            }
+        }
+
+        // 選擇角色切換日記內容
+        function selectRole(roleId) {
+            const data = rolesData[roleId];
+            const roleContent = document.getElementById('roleContent');
+
+            roleContent.innerHTML = `
+                <div class="flex justify-between items-center font-serif font-bold text-historyPaper-900 border-b border-historyPaper-300 pb-1 mb-1.5">
+                    <span>${data.title}</span>
+                    <span class="text-[9px] bg-historyPaper-200 px-1.5 py-0.5 rounded text-historyPaper-800">${data.tag}</span>
+                </div>
+                <p class="text-[11px] text-historyPaper-800 leading-relaxed italic font-serif">
+                    ${data.content}
+                </p>
+            `;
+
+            // 更新按鈕 active 狀態
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.className = 'role-btn p-1.5 rounded bg-historyPaper-200 text-historyPaper-800 text-[10px] font-bold text-center';
+            });
+            document.getElementById(`btn-${roleId}`).className = 'role-btn active p-1.5 rounded bg-historyPaper-800 text-historyPaper-100 text-[10px] font-bold text-center';
+        }
+
+        // 檢查全頁答案並計分
+        function checkAnswers() {
+            let totalScore = 0;
+
+            // 1. 任務一對錯 (40分)
+            const mapSelects = document.querySelectorAll('.q-map');
+            let q1Count = 0;
+            mapSelects.forEach(s => {
+                if (s.value === s.dataset.ans) q1Count++;
+            });
+            totalScore += q1Count * 20;
+
+            // 2. 任務二觀念填寫檢核 (20分)
+            const roleAns = document.getElementById('roleAns').value.trim();
+            if (roleAns.length >= 5) {
+                totalScore += 20;
+            }
+
+            // 3. 任務三文化連連看 (20分)
+            const cultSelects = document.querySelectorAll('.match-cult');
+            let q3Count = 0;
+            cultSelects.forEach(s => {
+                if (s.value === s.dataset.ans) q3Count++;
+            });
+            totalScore += q3Count * 5;
+
+            // 4. 任務四量規加總 (20分)
+            let rubricScore = 0;
+            for (let i = 1; i <= 3; i++) {
+                const rVal = document.querySelector(`input[name="hr${i}"]:checked`);
+                if (rVal) rubricScore += parseInt(rVal.value);
+            }
+            totalScore += Math.round((rubricScore / 12) * 20);
+
+            // 更新顯示總分
+            document.getElementById('scoreDisplay').innerText = totalScore;
+        }
+
+        // 計算評量量規得分
+        function calcRubric() {
+            for (let i = 1; i <= 3; i++) {
+                const rVal = document.querySelector(`input[name="hr${i}"]:checked`);
+                if (rVal) {
+                    document.getElementById(`hr${i}_val`).innerText = rVal.value + ' 分';
+                }
+            }
+        }
+
+        // 重設學習單
+        function resetWorksheet() {
+            if (confirm('確定要清空所有填寫與紀錄嗎？')) {
+                location.reload();
+            }
+        }
+    </script>
 </body>
 </html>
